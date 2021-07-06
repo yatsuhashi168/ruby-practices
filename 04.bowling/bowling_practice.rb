@@ -8,8 +8,6 @@ shots = []
 scores.each do |n|
   if n != 'X'
     shots << n.to_i
-  elsif n == 'X' && shots.size.odd?
-    shots << 10
   else
     shots << 10
     shots << 0 if shots.size < 18
@@ -22,20 +20,18 @@ shots.first(18).each_slice(2) do |n|
 end
 frames << shots.slice(18..20)
 
-point = 0
-frames.each.with_index do |frame, i|
+point = frames.each.with_index.sum do |frame, i|
   if frame[0] == 10 && frame.size == 2
-    point += frames[i + 1][0]
-    point +=
-      if frames[i + 1][0] == 10 && frames[i + 1].size == 2
-        frames[i + 2][0]
-      else
-        frames[i + 1][1]
-      end
+    if frames[i + 1][0] == 10 && frames[i + 1].size == 2
+      frames[i + 2][0] + frames[i + 1][0] + frame.sum
+    else
+      frames[i + 1][1] + frames[i + 1][0] + frame.sum
+    end
   elsif frame.sum == 10 && frame.size == 2
-    point += frames[i + 1][0]
+    frames[i + 1][0] + frame.sum
+  else
+    frame.sum
   end
-  point += frame.sum
 end
 
 puts point
