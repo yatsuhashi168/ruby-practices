@@ -68,17 +68,11 @@ def output_with_l_option(files)
 end
 
 def lined_up(files)
-  line = if (files.size % 3).zero?
-           files.size / 3
-         else
-           files.size / 3 + 1
-         end
+  line = (files.size / 3.to_f).ceil
 
-  lined_up_files = []
-  files.each_slice(line) do |n|
-    lined_up_files << n
-  end
+  lined_up_files = files.each_slice(line).map { |file| file }
 
+  # nilを追加して一番要素数が多いものに要素数を合わせる
   max_size = lined_up_files.map(&:size).max
   lined_up_files.map! { |it| it.values_at(0...max_size) }
   lined_up_files
@@ -87,7 +81,7 @@ end
 def output(files)
   lined_up_files = lined_up(files)
 
-  width = files.max_by(&:size).size
+  width = files.map(&:size).max
   lined_up_files.transpose.each do |lined_up_file|
     lined_up_file.each do |n|
       print n.ljust(width + 3) unless n.nil?
